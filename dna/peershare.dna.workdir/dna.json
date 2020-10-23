@@ -1,0 +1,13 @@
+{
+  "name": "peershare",
+  "uuid": "",
+  "properties": null,
+  "zomes": {
+    "peershare": {
+      "wasm_path": "../target/wasm32-unknown-unknown/release/peershare.wasm"
+    },
+    "tags": {
+      "wasm_path": "../target/wasm32-unknown-unknown/release/tags.wasm"
+    }
+  }
+}
