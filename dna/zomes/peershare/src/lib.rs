@@ -37,7 +37,7 @@ struct SearchResult{
 
 //TODO: Finish this function
 #[hdk_extern]
-pub fn create_tag(input:SearchInput)->SearchResult{
+pub fn browse_files(input:SearchInput)->SearchResult{
     // calculate  FilterTime =  Year.Month.Day.Hour.Min from SearchInput.filter_by_last_min based on (now)
     // then we would have 2 sources of date: 
     // from  FilterTime to now based on each minutes(or quarter)
