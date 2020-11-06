@@ -1,12 +1,12 @@
 [package]
 authors = ["h.abedijoo@gmail.com"]
 edition = "2020"
-name = "peershare"
+name = "tags"
 version = "0.0.1"
 
 [lib]
 crate-type = ["cdylib", "rlib"]
-name = "peershare"
+name = "tags"
 
 [dependencies]
 derive_more = "0"
