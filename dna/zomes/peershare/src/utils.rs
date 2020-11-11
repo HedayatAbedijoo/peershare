@@ -25,3 +25,4 @@ pub fn try_from_entry<T: TryFrom<SerializedBytes>>(entry: Entry) -> ExternResult
         _ => crate::error("Could not convert entry"),
     }
 }
+

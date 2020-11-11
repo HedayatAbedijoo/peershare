@@ -1,0 +1,19 @@
+pub fn create_tags()->Result{
+
+    let tag_list:Vec<String>  = tag_util::get_valid_tags(input.tags);
+    //if tag_list return error, 
+    // return Ok( CreateTag{result:false, msg:function_error msg})
+
+    let path_date = "20201206".into(); // get current YearMonthDay in this format YYYYMMDD
+    let path_time = "1312".into(); // get current time in this format HHMM
+    
+    
+    for s in tag_list { // each String is moved into s here...
+        
+        // exp:   tag.YearMonthDay.HHmm
+        //        art.20200623.1607
+        let path = format!("{}.{}.{}",s,path_date,path_time);
+        // create path to EntryHash
+    }
+
+}
