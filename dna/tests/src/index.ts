@@ -1,46 +1,106 @@
-import { Orchestrator, Config } from "@holochain/tryorama";
+import {
+  Orchestrator,
+  Config,
+  InstallAgentsHapps,
+  InstalledAgentHapps,
+} from "@holochain/tryorama";
+import { ScenarioApi } from "@holochain/tryorama/lib/api";
+import path from "path";
 
-const sleep = (ms) => new Promise((resolve) => setTimeout(() => resolve(), ms));
+const conductorConfig = Config.gen();
+
+const conductorHapps: InstallAgentsHapps = [
+  // agent 0 ...
+  [
+    // happ 0
+    [
+      // dna 0
+      path.join("../peershare.dna.gz"),
+    ],
+  ],
+];
 
 const orchestrator = new Orchestrator();
 
-export const simpleConfig = {
-  alice: Config.dna("../todo_rename_zome.dna.gz", null),
-  bobbo: Config.dna("../todo_rename_zome.dna.gz", null),
-};
+// orchestrator.registerScenario(
+//   "get_agent_pubkey test scenario",
+//   async (s: ScenarioApi, t) => {
+//     const [alice, bob] = await s.players([conductorConfig, conductorConfig]);
+//     const [alice_test_happ] = await alice.installAgentsHapps(conductorHapps);
+//     const ZOME_NAME = "file_storage";
 
+//     const res = await alice_test_happ[0].cells[0].call(
+//       ZOME_NAME,
+//       "get_agent_pubkey",
+//       null
+//     );
+//     t.ok(res);
+//   }
+// );
 
 orchestrator.registerScenario(
-  "create and get a calendar event",
-  async (s, t) => {
-    const { conductor } = await s.players({
-      conductor: Config.gen(simpleConfig),
-    });
-    await conductor.spawn();
+  "create file test scenario",
+  async (s: ScenarioApi, t) => {
+    const [alice, bob] = await s.players([conductorConfig, conductorConfig]);
+    const [alice_test_happ] = await alice.installAgentsHapps(conductorHapps);
+    const ZOME_NAME = "file_storage";
+    const conductor = alice_test_happ[0].cells[0];
 
-    let calendarEventHash = await conductor.call(
-      "alice",
-      "todo_rename_zome",
-      "create_calendar_event",
-      {
-        title: "Event 1",
-        start_time: [Math.floor(Date.now() / 1000), 0],
-        end_time: [Math.floor(Date.now() / 1000) + 1000, 0],
-        location: { Custom: "hiii" },
-        invitees: [],
-      }
+    // In memory dummy file to upload to DNA
+    const chunkSize = 8 * 1024;
+    const chunkNumer = 6;
+    const bufStr = Array(chunkSize).fill("h").join("");
+    let chunkBytes = Buffer.from(bufStr, "utf8");
+    const chunksHashes: any[] = [];
+
+    ////////Upload each chunk as a file_chunk
+    for (let i = 0; i < chunkNumer; i++) {
+      const start = Date.now();
+      const hash = await conductor.call(
+        ZOME_NAME,
+        "create_file_chunk",
+        Buffer.from(Array(chunkSize).fill(i).join(""))
+      );
+      const end = Date.now();
+      console.log(chunkBytes.length);
+      console.log((end - start) / 1000);
+      chunksHashes.push(hash);
+    }
+    console.log("File Hashes:**********");
+    console.log(chunksHashes);
+    console.log("*********************");
+
+    /////// Upload file Metadata to DNA
+    let fileMetadata = {
+      name: "example.txt",
+      fileType: "text/plain",
+      chunksHashes,
+      size: chunkSize * chunkNumer,
+      lastModified: [Math.floor(Date.now() / 1000), 0],
+    };
+    let fileHash = await conductor.call(
+      ZOME_NAME,
+      "create_file_metadata",
+      fileMetadata
     );
-    t.ok(calendarEventHash);
+    t.ok(fileHash);
 
-    await sleep(10);
+    console.log("MetaData file Hashe:**********");
+    console.log(fileMetadata);
+    console.log("*********************");
 
-    let calendarEvents = await conductor.call(
-      "bobbo",
-      "todo_rename_zome",
-      "get_all_todo_rename_zome",
-      null
+    let fileResult = await conductor.call(
+      ZOME_NAME,
+      "get_file_metadata",
+      fileHash
     );
-    t.equal(calendarEvents.length, 1);
+    t.ok(fileResult);
+
+    for (const chunkHash of fileResult.chunksHashes) {
+      let chunk = await conductor.call(ZOME_NAME, "get_file_chunk", chunkHash);
+      t.ok(chunk);
+      console.log(chunk);
+    }
   }
 );
 

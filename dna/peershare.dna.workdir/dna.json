@@ -8,6 +8,9 @@
     },
     "tags": {
       "wasm_path": "../target/wasm32-unknown-unknown/release/tags.wasm"
+    },
+    "file_storage": {
+      "wasm_path": "../target/wasm32-unknown-unknown/release/file_storage.wasm"
     }
   }
 }

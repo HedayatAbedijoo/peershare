@@ -7,6 +7,11 @@ pub fn create_tags()->Result{
     let path_date = "20201206".into(); // get current YearMonthDay in this format YYYYMMDD
     let path_time = "1312".into(); // get current time in this format HHMM
     
+    // tags:   art;old
+
+    // path1:   art.20201206.1312
+    // path1:   old.20201206.1312
+
     
     for s in tag_list { // each String is moved into s here...
         

@@ -1,6 +1,6 @@
 [package]
 authors = ["h.abedijoo@gmail.com"]
-edition = "2020"
+edition = "2018"
 name = "peershare"
 version = "0.0.1"
 
@@ -8,8 +8,10 @@ version = "0.0.1"
 crate-type = ["cdylib", "rlib"]
 name = "peershare"
 
+
 [dependencies]
 derive_more = "0"
 serde = "1"
 
-hdk3 = {git = "https://github.com/holochain/holochain", rev = "4714fbd", package = "hdk3"}
+hc_utils = "0"
+hdk3 = "0"

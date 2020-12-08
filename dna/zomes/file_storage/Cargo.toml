@@ -8,9 +8,12 @@ version = "0.0.1"
 crate-type = ["cdylib", "rlib"]
 name = "file_storage"
 
+
 [dependencies]
 derive_more = "0"
 serde = "1"
 
-hdk3 = {git = "https://github.com/holochain/holochain", rev = "4714fbd", package = "hdk3"}
-file_storage = {git = "https://github.com/holochain-open-dev/file-storage-module", package = "file_storage"}
+hc_utils = "0"
+hdk3 = "0"
+
+file_storage = {git = "https://github.com/holochain-open-dev/file-storage-module", branch = "main", package = "file_storage"}
