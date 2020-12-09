@@ -1,13 +1,19 @@
-pub fn get_valid_tags(Vec<String> tags)->Result<Vec<String>>{
-    // TODO: get unique a tag list(in lower case) that all items are unique and valid.
-    // if there is any, return error with probper message
-    
+use crate::TagResult;
+
+pub fn validate_tags(tags: Vec<String>) -> TagResult {
+    let mut err: Vec<String> = Vec::new();
+    for elem in tags {
+        if !is_tag_valid(&elem) {
+            err.push(format!("{} is not valid", elem));
+        }
     }
-    
-    pub fn is_tag_valid(String:tag)->bool{
-    // validate tag. 
-    // it should be string, 
-    // lenght>=3
-    // should be just english characters. no any speciall characters or numbers.
-    // 
+
+    if err.len() == 0 {
+        return TagResult::success();
+    } else {
+        return TagResult::error(err.join(";"));
     }
+}
+pub fn is_tag_valid(tag: &String) -> bool {
+    tag.chars().all(char::is_alphabetic) && tag.len() >= 3 && tag.len() <= 10
+}

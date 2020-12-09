@@ -12,7 +12,7 @@
     "@holochain/conductor-api": "git+https://github.com/holochain/holochain-conductor-api.git",
     "@holochain/tryorama": "^0.4.0-dev.1",
     "@types/lodash": "^4.14.158",
-    "@types/node": "^14.0.14",
+    "@types/node": "^14.14.11",
     "lodash": "^4.17.19",
     "tape": "^5.0.1",
     "ts-node": "^8.10.2",
