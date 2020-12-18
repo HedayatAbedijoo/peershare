@@ -21,7 +21,7 @@ const conductorHapps: InstallAgentsHapps = [
 ];
 
 const orchestrator = new Orchestrator();
-
+/*
 orchestrator.registerScenario(
   "Scenario: Tag Validation",
   async (s: ScenarioApi, t) => {
@@ -72,15 +72,69 @@ orchestrator.registerScenario(
     t.ok(test1);
     t.deepEqual(test1.result, false);
     _log(test1, "tag_file_result");
+  }
+);
+*/
+orchestrator.registerScenario(
+  "Scenario: Test Upload and Tag",
+  async (s: ScenarioApi, t) => {
+    const [alice, bob] = await s.players([conductorConfig, conductorConfig]);
+    const [alice_test_happ] = await alice.installAgentsHapps(conductorHapps);
+    const Tag_ZOME_NAME = "tags";
+    const FileStorage_Zome_Name = "file_storage";
+    const PeerShare_Zome_Name = "peershare";
+    const conductor = alice_test_happ[0].cells[0];
 
-    /// All valid Tags.
-    test1 = await alice_test_happ[0].cells[0].call(Tag_ZOME_NAME, "tag_file", {
-      file_hash: Dummy_Hash_File,
-      tags: ["qwe", "jfhgnburtg", "FGRFS"],
+    const fileMetadata = dummy_file_metadata();
+    let fileHash = await conductor.call(
+      FileStorage_Zome_Name,
+      "create_file_metadata",
+      fileMetadata
+    );
+    t.ok(fileHash);
+    _log(fileHash, "file created");
+
+    /// upload a new meta_data file
+    let test1 = await conductor.call(Tag_ZOME_NAME, "tag_file", {
+      file_hash: fileHash,
+      tags: ["movie"],
     });
     t.ok(test1);
     t.deepEqual(test1.result, true);
-    _log(test1, "tag_file_result");
+    _log(test1, "file_tagged");
+
+    ///// Test link to my address is working.
+    let myfilesResult = await conductor.call(
+      Tag_ZOME_NAME,
+      "get_my_files",
+      null
+    );
+
+    t.ok(myfilesResult);
+    t.deepEqual(myfilesResult.list, 1);
+    _log(myfilesResult, "all my files");
+  }
+);
+
+orchestrator.registerScenario(
+  "Scenario: Test new extension function to file_storage module",
+  async (s: ScenarioApi, t) => {
+    const [alice, bob] = await s.players([conductorConfig, conductorConfig]);
+    const [alice_test_happ] = await alice.installAgentsHapps(conductorHapps);
+    const Tag_ZOME_NAME = "tags";
+    const FileStorage_Zome_Name = "file_storage";
+    const PeerShare_Zome_Name = "peershare";
+    const conductor = alice_test_happ[0].cells[0];
+
+    /////
+    let file_stortage_test = await conductor.call(
+      FileStorage_Zome_Name,
+      "new_extention_function",
+      null
+    );
+
+    t.ok(file_stortage_test);
+    _log(file_stortage_test, "test file storage new function");
   }
 );
 
