@@ -103,16 +103,29 @@ orchestrator.registerScenario(
     t.deepEqual(test1.result, true);
     _log(test1, "file_tagged");
 
-    ///// Test link to my address is working.
-    let myfilesResult = await conductor.call(
+    ///// Test link to my address is working on Tag Zome.
+    let myfilesResult_fromTagZome = await conductor.call(
       Tag_ZOME_NAME,
       "get_my_files",
       null
     );
 
-    t.ok(myfilesResult);
-    t.deepEqual(myfilesResult.list, 1);
-    _log(myfilesResult, "all my files");
+    t.ok(myfilesResult_fromTagZome);
+    t.deepEqual(myfilesResult_fromTagZome.list, 1);
+    _log(myfilesResult_fromTagZome, "all my files");
+
+    ///// Test link to my address is working on Tag Zome.
+    let myfilesResult_fromPeerShareZome = await conductor.call(
+      PeerShare_Zome_Name,
+      "get_my_files",
+      null
+    );
+
+    t.ok(myfilesResult_fromPeerShareZome);
+    t.deepEqual(myfilesResult_fromPeerShareZome.list, 0);
+    _log(myfilesResult_fromPeerShareZome, "all my files");
+
+
   }
 );
 

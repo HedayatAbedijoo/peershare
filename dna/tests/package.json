@@ -5,15 +5,14 @@
   "main": "index.js",
   "scripts": {
     "test": "npm run test:setup && npm run test:execute",
-    "test:setup": "CARGO_TARGET_DIR=../target cargo build --release --target wasm32-unknown-unknown && dna-util -c ../peershare.dna.workdir",    
+    "test:setup": "CARGO_TARGET_DIR=../target cargo build --release --target wasm32-unknown-unknown && dna-util -c ../peershare.dna.workdir",
     "test:execute": "TRYORAMA_LOG_LEVEL=info RUST_LOG=error RUST_BACKTRACE=1 TRYORAMA_HOLOCHAIN_PATH=\"holochain\" ts-node src/index.ts"
-
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@holochain/conductor-api": "git+https://github.com/holochain/holochain-conductor-api.git",
-    "@holochain/tryorama": "^0.4.0-dev.1",
+    "@holochain/tryorama": "^0.4.0-dev.2",
     "@types/lodash": "^4.14.158",
     "@types/node": "^14.14.11",
     "lodash": "^4.17.19",
